@@ -1,0 +1,29 @@
+name: Auto Commit
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # Her gün 18:00 Türkiye saati civarı çalışır
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Git Config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Append timestamp to activity.txt
+        run: |
+          echo "Commit at: $(date)" >> activity.txt
+          git add activity.txt
+          git commit -m "Auto commit at $(date)"
+          git push origin main
